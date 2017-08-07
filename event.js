@@ -13,7 +13,8 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+    console.log("hello")
     if (request.greeting == "selection") {
-      console.log(request.element)
+      console.log("hello")
     }
 })

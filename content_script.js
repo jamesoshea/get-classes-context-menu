@@ -10,7 +10,7 @@ let clickedElement = {
 }
 
 document.addEventListener("contextmenu", function(event){
-  clickedElement.alt = event.target.getAttribute('alt')
+  // clickedElement.alt = event.target.getAttribute('alt')
   clickedElement.className = event.target.className
   clickedElement.classList = event.target.classList
   clickedElement.id = event.target.id
