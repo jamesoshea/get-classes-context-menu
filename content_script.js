@@ -6,6 +6,13 @@ document.addEventListener("mousedown", function(event){
 }, true);
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    clickedElement.remove();
+    console.log(clickedElement)
+    message = {
+      greeting: "selection",
+      classString: clickedElement.classList.toString() 
+    }
+    chrome.runtime.sendMessage(message, function(response) {
+      //lol
+    })
   }
 );
