@@ -1,3 +1,5 @@
+let currentClasses = []
+
 // background (event) page
 let parent = chrome.contextMenus.create({
   "title": "console.log this element",
