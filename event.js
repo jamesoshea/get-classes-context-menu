@@ -15,7 +15,5 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
       console.log(request.element)
-      // let classes = request.classString.slice(0, request.classString.length -1).split(' ')
-      // console.log(classes)
     }
 })

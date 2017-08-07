@@ -1,6 +1,6 @@
 //content script
 let clickedElement = {
-
+  alt: null,
   className: null,
   classList: null,
   id: null,
@@ -10,13 +10,14 @@ let clickedElement = {
 }
 
 document.addEventListener("contextmenu", function(event){
-    clickedElement.className = event.target.className
-    clickedElement.classList = event.target.classList
-    clickedElement.id = event.target.id
-    clickedElement.innerHTML = event.target.innerHTML
-    clickedElement.src = event.target.src
-    clickedElement.tagName = event.target.tagName
-}, true);
+  clickedElement.alt = event.target.getAttribute('alt')
+  clickedElement.className = event.target.className
+  clickedElement.classList = event.target.classList
+  clickedElement.id = event.target.id
+  clickedElement.innerHTML = event.target.innerHTML
+  clickedElement.src = event.target.src
+  clickedElement.tagName = event.target.tagName.toLowerCase()
+}, true)
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(clickedElement)
@@ -24,8 +25,4 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       greeting: "selection",
       element: clickedElement
     }
-    chrome.runtime.sendMessage(message, function(response) {
-      //lol
-    })
-  }
-);
+  })
