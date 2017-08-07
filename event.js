@@ -1,4 +1,4 @@
-let currentClasses = []
+let results = []
 
 // background (event) page
 let parent = chrome.contextMenus.create({
@@ -14,6 +14,8 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
-      console.log(request.element)
+      results.push(JSON.stringify(request.element))
+      console.log(results)
+      localStorage.setItem('results', results)
     }
 })

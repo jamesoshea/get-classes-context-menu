@@ -20,6 +20,8 @@ document.addEventListener("contextmenu", function(event){
   clickedElement.tagName = event.target.tagName.toLowerCase()
 }, true)
 
+//start an array, loop through class list and add elements with the correct class. send that sucker back to the shit event.js
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(clickedElement)
