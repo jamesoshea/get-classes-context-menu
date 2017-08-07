@@ -1,18 +1,21 @@
+let currentClasses = []
+
 // background (event) page
-var parent = chrome.contextMenus.create({
-  "title": "Remove Element",
+let parent = chrome.contextMenus.create({
+  "title": "console.log this element",
   "id": "ekjfhvqeriuy87rvh",
   "contexts": ["all"]
-});
+})
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-  chrome.tabs.sendMessage(tab.id, {});
+  chrome.tabs.sendMessage(tab.id, {})
 })
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
-      console.log(request.classString)
-      sendResponse({farewell: "goodbye"})
+      console.log(request.element)
+      // let classes = request.classString.slice(0, request.classString.length -1).split(' ')
+      // console.log(classes)
     }
 })

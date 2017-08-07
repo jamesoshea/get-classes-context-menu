@@ -12,9 +12,9 @@
   ],
 
   "icons": {
-    "16": "images/red-x-16.png",
-    "48": "images/red-x-48.png",
-    "128": "images/red-x-128.png"
+    "16": "images/16q.png",
+    "48": "images/48q.png",
+    "128": "images/128q.png"
   },
 
   "background": {
