@@ -7,10 +7,12 @@ let parent = chrome.contextMenus.create({
   "contexts": ["all"]
 })
 
+//no idea what this does but nothing works without it
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
   chrome.tabs.sendMessage(tab.id, {})
 })
 
+//save classList
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
@@ -18,6 +20,7 @@ chrome.runtime.onMessage.addListener(
     }
 })
 
+//send classList to popup.html
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "imReady") {
