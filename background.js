@@ -1,4 +1,5 @@
 let result = ''
+let collection = null
 
 // background (event) page
 let parent = chrome.contextMenus.create({
@@ -17,13 +18,14 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
       result = request.classList
+      collection = request.collection
     }
 })
 
-//send classList to popup.html
+//send classList to popup.js
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "imReady") {
-      chrome.runtime.sendMessage({greeting: "result", result: result})
+      chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection})
     }
 })

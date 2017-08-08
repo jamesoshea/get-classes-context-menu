@@ -17,14 +17,16 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
       if(request.result) {
         document.getElementById('result').innerHTML = request.result
+        console.log(typeof collection)
+        console.log(collection.item(0))
+        document.getElementById('collection').innerHTML = request.collection
       } else {
         document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
+        document.getElementById('collection').innerHTML = '0 results'
       }
     }
 })
 
-chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
-    if (request.greeting == "gotYourElements") {
-      console.log(request.collection)
-    }
-})
+function formatResult(collection) {
+  return Array.prototype.slice.call(collection)
+}
