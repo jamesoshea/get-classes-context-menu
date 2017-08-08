@@ -19,6 +19,7 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == "selection") {
       result = request.classList
       collection = request.collection
+      chrome.browserAction.setBadgeText({text: collection.length.toString()})
     }
 })
 
