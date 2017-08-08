@@ -1,36 +1,22 @@
 //content script
-let clickedElement = {
-  alt: null,
-  className: null,
-  classList: null,
-  id: null,
-  innerHTML: null,
-  src: null,
-  tagName: null
-}
+let classList = ''
 
 
-document.addEventListener("contextmenu", function(event){
-  clickedElement.alt = event.target.getAttribute('alt')
-  clickedElement.className = event.target.className
-  clickedElement.classList = event.target.classList
-  clickedElement.id = event.target.id
-  clickedElement.innerHTML = event.target.innerHTML
-  clickedElement.src = event.target.src
-  clickedElement.tagName = event.target.tagName.toLowerCase()
+document.addEventListener("contextmenu", (event) => {
+  classList = event.target.classList[0]
+
 }, true)
 
 //start an array, loop through class list and add elements with the correct class. send that sucker back to the shit event.js
 
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log(clickedElement)
-    message = {
-      greeting: "selection",
-      element: clickedElement
-    }
-    chrome.runtime.sendMessage(message, function(response) {
-      //lol
-    })
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(classList)
+  message = {
+    greeting: "selection",
+    classList: classList
   }
-);
+  chrome.runtime.sendMessage(message, (response) => {
+    //lol
+  })
+})

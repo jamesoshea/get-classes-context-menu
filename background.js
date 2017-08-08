@@ -1,4 +1,4 @@
-let results = []
+let result = ''
 
 // background (event) page
 let parent = chrome.contextMenus.create({
@@ -14,8 +14,13 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
-      results.push(JSON.stringify(request.element))
-      console.log(results)
-      localStorage.setItem('results', results)
+      result = request.classList
+    }
+})
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.greeting == "imReady") {
+      chrome.runtime.sendMessage({greeting: "result", result: result})
     }
 })
