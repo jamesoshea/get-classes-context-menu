@@ -17,11 +17,15 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
       if(request.result) {
         document.getElementById('result').innerHTML = request.result
-        console.log(collection.item(0))
         document.getElementById('collection').innerHTML = request.collection
+        if (request.collection.length === 1) {
+          document.getElementById('result-number').innerHTML = request.collection.length + ' result:'
+        } else {
+          document.getElementById('result-number').innerHTML = request.collection.length + ' results:'
+        }
       } else {
         document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
-        document.getElementById('collection').innerHTML = '0 results'
+        document.getElementById('collection').innerHTML = ''
       }
     }
 })

@@ -2,3 +2,7 @@ body {
   min-width: 300px;
   min-height: 500px;
 }
+
+.centre {
+  text-align: center;
+}
