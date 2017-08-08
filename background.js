@@ -3,7 +3,7 @@ let collection = null
 
 // background (event) page
 let parent = chrome.contextMenus.create({
-  "title": "console.log this element",
+  "title": "Quarry for this",
   "id": "ekjfhvqeriuy87rvh",
   "contexts": ["all"]
 })

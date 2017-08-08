@@ -5,7 +5,7 @@ let classList = ''
 document.addEventListener("contextmenu", (event) => {
   classList = event.target.classList[0]
   let collection = document.getElementsByClassName(classList)
-  console.log(collection)
+  console.log(createObject(collection))
   message = {
     greeting: "selection",
     classList: classList,
@@ -14,3 +14,7 @@ document.addEventListener("contextmenu", (event) => {
   chrome.runtime.sendMessage(message, (response) => {
   })
 }, true)
+
+function createObject(collection) {
+  return Array.prototype.slice.call(collection)
+}

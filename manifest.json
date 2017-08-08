@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "Get Classes",
+  "name": "Quarry",
   "description": "Adds a context menu (right-click) tool to console.log current classes in browser and background context.",
   "version": "1.0",
   "author": "James O'Shea",

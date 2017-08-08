@@ -17,7 +17,6 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
       if(request.result) {
         document.getElementById('result').innerHTML = request.result
-        console.log(typeof collection)
         console.log(collection.item(0))
         document.getElementById('collection').innerHTML = request.collection
       } else {
