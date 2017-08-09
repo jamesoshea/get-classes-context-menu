@@ -13,6 +13,7 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == 'clicked') {
       //create array from collection and process it
       let collectionArr = formatCollection(collection)
+      console.log(collection)
       let message = {
         greeting: "selection",
         classList: classList,
@@ -24,7 +25,7 @@ chrome.runtime.onMessage.addListener(
     }
 })
 
-// 
+//
 function formatCollection(collection) {
   let result = []
   for (var i = 0; i < collection.length; i++){
@@ -56,32 +57,32 @@ function formatCollection(collection) {
     } else if (collection[i].nodeName == 'H1') {
       result.push({
         type: 'h1',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H2') {
       result.push({
         type: 'h2',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H3') {
       result.push({
         type: 'h3',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H4') {
       result.push({
         type: 'h4',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H5') {
       result.push({
         type: 'h5',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H6') {
       result.push({
         type: 'h6',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else {
       result = ''
