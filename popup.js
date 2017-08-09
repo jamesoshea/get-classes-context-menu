@@ -6,6 +6,16 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
       //do database/webapp stuff here
   })
+
+  button = document.getElementById('clearItems')
+  button.addEventListener('click', ()=> {
+    chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
+      document.getElementById('url').innerHTML = ''
+      document.getElementById('result-number').innerHTML = '0 results'
+      document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
+      document.getElementById('resultList').innerHTML = ''
+    })
+  })
 })
 
 //set the view with the response (this could be a lot more elegant)
@@ -21,34 +31,32 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
         }
         // document.getElementById('collection').innerHTML = JSON.stringify(request.collection)
         let list = document.getElementById('resultList')
-        for (let i = 0; i < request.collection.length; i++) {
-          let node = document.createElement('LI')
-          if (request.collection[i].type == 'img') {
-            let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].src)
-            node.appendChild(textNode)
-            list.appendChild(node)
-          } else if (request.collection[i].type == 'a') {
-            let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].url)
-            node.appendChild(textNode)
-            list.appendChild(node)
-          } else {
-            if (request.collection[i].contents) {
-              let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].contents)
-              node.appendChild(textNode)
-              list.appendChild(node)
-            } else {
-              let textNode = document.createTextNode('Invalid element type')
-              node.appendChild(textNode)
-              list.appendChild(node)
-            }
-          }
-        }
+        makeList(request.collection, list)
       } else {
         document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
       }
     }
 })
 
-function makeListElement() {
-
+//append items from collection to UI list
+function makeList(collection, list) {
+  for (let i = 0; i < collection.length; i++) {
+    let node = document.createElement('LI')
+    if (collection[i].type == 'img') {
+      let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].src)
+      node.appendChild(textNode)
+    } else if (collection[i].type == 'a') {
+      let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].url)
+      node.appendChild(textNode)
+    } else {
+      if (collection[i].contents) {
+        let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].contents)
+        node.appendChild(textNode)
+      } else {
+        let textNode = document.createTextNode('Invalid element type')
+        node.appendChild(textNode)
+      }
+    }
+    list.appendChild(node)
+  }
 }

@@ -5,7 +5,6 @@ let collection = null
 //save classList when right-click anywhere on page
 document.addEventListener("contextmenu", (event) => {
   classList = event.target.classList.value
-  console.log(classList)
   collection = document.getElementsByClassName(classList)
 }, true)
 
@@ -20,18 +19,15 @@ chrome.runtime.onMessage.addListener(
         collection: collectionArr,
         url: request.url
       }
-      console.log(collection, collectionArr)
       chrome.runtime.sendMessage(message, (response) => {
       })
     }
 })
 
+// 
 function formatCollection(collection) {
-
   let result = []
-
   for (var i = 0; i < collection.length; i++){
-
     if (collection[i].nodeName == 'IMG') {
       result.push({
         type: 'img',

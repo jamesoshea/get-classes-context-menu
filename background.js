@@ -34,5 +34,10 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "imReady") {
       chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection, url: url})
+    } else if (request.greeting == "clearItems") {
+      result = ''
+      collection = null
+      url = ''
+      chrome.browserAction.setBadgeText({text: ''})
     }
 })
