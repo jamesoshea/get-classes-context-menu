@@ -13,7 +13,6 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == 'clicked') {
       //create array from collection and process it
       let collectionArr = formatCollection(collection)
-      console.log(collection)
       let message = {
         greeting: "selection",
         classList: classList,
@@ -25,7 +24,7 @@ chrome.runtime.onMessage.addListener(
     }
 })
 
-//
+//outputs an array ready to send to background.js
 function formatCollection(collection) {
   let result = []
   for (var i = 0; i < collection.length; i++){

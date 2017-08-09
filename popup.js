@@ -1,3 +1,4 @@
+//initial state, updated by background.js
 let result = ''
 let collection = null
 let url = ''
@@ -5,19 +6,22 @@ let url = ''
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
   chrome.runtime.sendMessage({greeting: 'imReady'})
-  //
+
+  //send data to server
   let button = document.getElementById('quarry')
   button.addEventListener('click', ()=> {
       sendData(result, collection, url)
   })
-
+  //clear view
   button = document.getElementById('clearItems')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
       document.getElementById('url').innerHTML = ''
-      document.getElementById('result-number').innerHTML = '0 results'
+      document.getElementById('result-number').innerHTML = ''
       document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
       document.getElementById('resultList').innerHTML = ''
+      document.getElementById('message').innerHTML = ''
+      document.getElementById('quarry').style.display = 'none'
     })
   })
 })
@@ -31,12 +35,12 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
       if(request.result) {
         document.getElementById('url').innerHTML += '<a href="' + request.url + '" target="blank">' + request.url + '</a>'
         document.getElementById('result').innerHTML = request.result
+        document.getElementById('quarry').style.display = 'inline'
         if (request.collection.length === 1) {
           document.getElementById('result-number').innerHTML = request.collection.length + ' result:'
         } else {
           document.getElementById('result-number').innerHTML = request.collection.length + ' results:'
         }
-        // document.getElementById('collection').innerHTML = JSON.stringify(request.collection)
         let list = document.getElementById('resultList')
         makeList(request.collection, list)
       } else {
@@ -82,9 +86,8 @@ function sendData(result, collection, url) {
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-  		console.log(http.responseText);
-      document.getElementById('message').innerHTML = 'Saved!'
-      document.getElementById('quarry').style.display = 'none' 
+      document.getElementById('message').innerHTML = 'Saved! The id of your scrape is:<br/>' + http.responseText
+      document.getElementById('quarry').style.display = 'none'
   	}
   }
   http.send(JSON.stringify(data));
