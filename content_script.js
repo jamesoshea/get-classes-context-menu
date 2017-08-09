@@ -4,7 +4,8 @@ let collection = null
 
 //save classList when right-click anywhere on page
 document.addEventListener("contextmenu", (event) => {
-  classList = event.target.classList[0]
+  classList = event.target.classList.value
+  console.log(classList)
   collection = document.getElementsByClassName(classList)
 }, true)
 

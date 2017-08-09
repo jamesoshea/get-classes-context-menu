@@ -11,15 +11,37 @@ document.addEventListener('DOMContentLoaded', ()=> {
 //set the view with the response (this could be a lot more elegant)
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
-      console.log(request.collection)
       if(request.result) {
         document.getElementById('url').innerHTML += request.url
         document.getElementById('result').innerHTML = request.result
-        document.getElementById('collection').innerHTML = request.collection
         if (request.collection.length === 1) {
           document.getElementById('result-number').innerHTML = request.collection.length + ' result:'
         } else {
           document.getElementById('result-number').innerHTML = request.collection.length + ' results:'
+        }
+        document.getElementById('collection').innerHTML = JSON.stringify(request.collection)
+        let list = document.getElementById('resultList')
+        for (let i = 0; i < request.collection.length; i++) {
+          let node = document.createElement('LI')
+          if (request.collection[i].type == 'img') {
+            let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].src)
+            node.appendChild(textNode)
+            list.appendChild(node)
+          } else if (request.collection[i].type == 'a') {
+            let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].url)
+            node.appendChild(textNode)
+            list.appendChild(node)
+          } else {
+            if (request.collection[i].contents) {
+              let textNode = document.createTextNode(request.collection[i].type + ': ' + request.collection[i].contents)
+              node.appendChild(textNode)
+              list.appendChild(node)
+            } else {
+              let textNode = document.createTextNode('Invalid element type')
+              node.appendChild(textNode)
+              list.appendChild(node)
+            }
+          }
         }
       } else {
         document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
@@ -27,3 +49,7 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
       }
     }
 })
+
+function makeListElement() {
+
+}
