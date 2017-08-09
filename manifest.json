@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Quarry",
-  "description": "Adds a context menu (right-click) tool to console.log current classes in browser and background context.",
+  "description": "Simple data mining extension.",
   "version": "0.0.1",
   "author": "James O'Shea",
 
