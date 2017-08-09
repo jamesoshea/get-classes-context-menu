@@ -12,14 +12,14 @@ document.addEventListener('DOMContentLoaded', ()=> {
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
       if(request.result) {
-        document.getElementById('url').innerHTML += request.url
+        document.getElementById('url').innerHTML += '<a href="' + request.url + '" target="blank">' + request.url + '</a>'
         document.getElementById('result').innerHTML = request.result
         if (request.collection.length === 1) {
           document.getElementById('result-number').innerHTML = request.collection.length + ' result:'
         } else {
           document.getElementById('result-number').innerHTML = request.collection.length + ' results:'
         }
-        document.getElementById('collection').innerHTML = JSON.stringify(request.collection)
+        // document.getElementById('collection').innerHTML = JSON.stringify(request.collection)
         let list = document.getElementById('resultList')
         for (let i = 0; i < request.collection.length; i++) {
           let node = document.createElement('LI')
@@ -45,7 +45,6 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
         }
       } else {
         document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
-        document.getElementById('collection').innerHTML = ''
       }
     }
 })

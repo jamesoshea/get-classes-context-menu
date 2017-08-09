@@ -8,3 +8,9 @@ body {
 .centre {
   text-align: center;
 }
+
+.clear-button {
+  text-align: right;
+  padding-top: 3rem;
+  padding-right: 2rem;
+}

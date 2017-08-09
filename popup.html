@@ -7,7 +7,14 @@
     <title></title>
   </head>
   <body>
-    <h1>This is quarry.</h1>
+    <div class="columns">
+      <div class="six column">
+        <h1>Quarry</h1>
+      </div>
+      <div class="six column clear-button">
+        <button class="btn btn-primary">Clear</button>
+      </div>
+    </div>
     <h4>URL</h4>
     <p id="url"></p>
     <h4>Classes:</h4>
@@ -17,7 +24,6 @@
     <div class="centre">
       <ol id="resultList">
       </ol>
-      <p id="collection"></p>
       <button id="quarry" class="btn btn-primary">Quarry it!</button>
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
