@@ -2,7 +2,6 @@
 let result = ''
 let collection = null
 let url = ''
-
 let columns = 0
 let rows = [[]]
 
@@ -33,6 +32,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, collection)
+  })
+  button = document.getElementById('csv')
+  button.addEventListener('click', ()=> {
+      exportToCsv('data.csv', rows)
   })
 })
 
@@ -93,7 +96,7 @@ function sendData(result, collection, url) {
 
 function addColumn(colName, data) {
   //add column name into first row
-  rows[0].push([colName])
+  rows[0].push(colName)
   for (let row = 0; row < data.length; row++){
     if(!Array.isArray(rows[row + 1])){
       rows.push([])

@@ -12,7 +12,10 @@
         <h1>Quarry</h1>
       </div>
       <div class="six column clear-button">
-        <button id="clearItems" class="btn btn-primary">Clear</button>
+        <button id="clearItems" class="btn btn-primary">Clear Items</button>
+      </div>
+      <div class="six column clear-button right">
+        <button id="clearSheet" class="btn btn-primary">Clear Table</button>
       </div>
     </div>
     <h4>URL: </h4>
@@ -21,12 +24,16 @@
     <p id="result" class="centre"></p>
     <hr>
     <h4 id="result-number"></h4>
+    <div class="input-group">
+      <input class="form-input" type="text" id="name-input" placeholder="Field Name">
+      <button id="addColumn" class="btn">Add Field</button>
+    </div>
     <div class="centre">
       <ol id="resultList">
       </ol>
-      <input type="text" id="name-input">
-      <button id="addColumn" class="btn">Add Field</button>
+      <hr>
       <button id="quarry" class="btn btn-primary">Quarry it!</button>
+      <button id="csv" class="btn btn-primary">Save as CSV</button>
       <p id="message"></p>
     </div>
     <script src="popup.js" charset="utf-8"></script>
