@@ -3,7 +3,7 @@ let result = ''
 let collection = null
 let url = ''
 let columns = 0
-let rows = [[]]
+let rows = [[],[]]
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -13,18 +13,20 @@ document.addEventListener('DOMContentLoaded', ()=> {
   //send data to server
   let button = document.getElementById('quarry')
   button.addEventListener('click', ()=> {
-      sendData(result, collection, url)
+      sendData(rows, url)
   })
   //clear view
   button = document.getElementById('clearItems')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
-      document.getElementById('url').innerHTML = ''
-      document.getElementById('result-number').innerHTML = ''
-      document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
-      document.getElementById('resultList').innerHTML = ''
-      document.getElementById('message').innerHTML = ''
-      document.getElementById('quarry').style.display = 'none'
+      clearItems()
+    })
+  })
+  button = document.getElementById('clearSheet')
+  button.addEventListener('click', ()=> {
+    chrome.runtime.sendMessage({greeting: 'clearSheet'}, (response)=>{
+      clearItems()
+      rows = [[],[]]
     })
   })
   //add column to sheet to sheet
@@ -32,10 +34,14 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, collection)
+      chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
+        clearItems()
+      })
+      document.getElementById('name-input').value = ''
   })
   button = document.getElementById('csv')
   button.addEventListener('click', ()=> {
-      exportToCsv('data.csv', rows)
+      exportToCsv(url + 'data.csv', rows)
   })
 })
 
@@ -75,7 +81,6 @@ function makeList(collection, list) {
 
 //send to Server
 function sendData(result, collection, url) {
-
   let http = new XMLHttpRequest()
   let toUrl = "http://localhost:3000";
   let data = {
@@ -97,53 +102,62 @@ function sendData(result, collection, url) {
 function addColumn(colName, data) {
   //add column name into first row
   rows[0].push(colName)
+  rows[1].push(result)
   for (let row = 0; row < data.length; row++){
-    if(!Array.isArray(rows[row + 1])){
+    if(!Array.isArray(rows[row + 2])){
       rows.push([])
     }
-    rows[row + 1][rows[0].length - 1] = data[row].contents
+    rows[row + 2][rows[0].length - 1] = data[row].contents
   }
   chrome.runtime.sendMessage({greeting: 'fieldAdded', rows: rows})
 }
 
 function exportToCsv(filename, rows) {
-        var processRow = function (row) {
-            var finalVal = '';
-            for (var j = 0; j < row.length; j++) {
-                var innerValue = row[j] === null ? '' : row[j].toString();
-                if (row[j] instanceof Date) {
-                    innerValue = row[j].toLocaleString();
-                };
-                var result = innerValue.replace(/"/g, '""');
-                if (result.search(/("|,|\n)/g) >= 0)
-                    result = '"' + result + '"';
-                if (j > 0)
-                    finalVal += ',';
-                finalVal += result;
-            }
-            return finalVal + '\n';
-        };
-
-        var csvFile = '';
-        for (var i = 0; i < rows.length; i++) {
-            csvFile += processRow(rows[i]);
-        }
-
-        var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-        if (navigator.msSaveBlob) { // IE 10+
-            navigator.msSaveBlob(blob, filename);
-        } else {
-            var link = document.createElement("a");
-            if (link.download !== undefined) { // feature detection
-                // Browsers that support HTML5 download attribute
-                var url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
+  var processRow = function (row) {
+    var finalVal = '';
+    for (var j = 0; j < row.length; j++) {
+      var innerValue = row[j] === null ? '' : row[j].toString();
+      if (row[j] instanceof Date) {
+        innerValue = row[j].toLocaleString();
+      };
+      var result = innerValue.replace(/"/g, '""');
+      if (result.search(/("|,|\n)/g) >= 0)
+        result = '"' + result + '"';
+      if (j > 0)
+        finalVal += ',';
+      finalVal += result;
     }
-// exportToCsv('export.csv', [])
+    return finalVal + '\n';
+  };
+
+  var csvFile = '';
+  for (var i = 0; i < rows.length; i++) {
+    csvFile += processRow(rows[i]);
+  }
+
+  var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+  if (navigator.msSaveBlob) { // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+      // Browsers that support HTML5 download attribute
+      var url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+}
+
+function clearItems() {
+  document.getElementById('url').innerHTML = ''
+  document.getElementById('result-number').innerHTML = ''
+  document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
+  document.getElementById('resultList').innerHTML = ''
+  document.getElementById('message').innerHTML = ''
+  document.getElementById('quarry').style.display = 'none'
+}
