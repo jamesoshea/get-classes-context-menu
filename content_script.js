@@ -31,12 +31,12 @@ function formatCollection(collection) {
     if (collection[i].nodeName == 'IMG') {
       result.push({
         type: 'img',
-        src: collection[i].src
+        contents: collection[i].src
       })
     } else if (collection[i].nodeName == 'A') {
       result.push({
         type: 'a',
-        url: collection[i].href
+        contents: collection[i].href
       })
     } else if (collection[i].nodeName == 'DIV') {
       result.push({
@@ -51,7 +51,7 @@ function formatCollection(collection) {
     } else if (collection[i].nodeName == 'P') {
       result.push({
         type: 'p',
-        text: collection[i].innerHTML
+        contents: collection[i].innerHTML
       })
     } else if (collection[i].nodeName == 'H1') {
       result.push({

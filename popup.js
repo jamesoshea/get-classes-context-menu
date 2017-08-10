@@ -3,6 +3,10 @@ let result = ''
 let collection = null
 let url = ''
 
+let columns = 0
+let rows = [[]]
+
+//functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
   chrome.runtime.sendMessage({greeting: 'imReady'})
@@ -24,6 +28,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
       document.getElementById('quarry').style.display = 'none'
     })
   })
+  //add column to sheet to sheet
+  button = document.getElementById('addColumn')
+  button.addEventListener('click', ()=> {
+      let name = document.getElementById('name-input').value
+      addColumn(name, collection)
+  })
 })
 
 //set the view with the response (this could be a lot more elegant)
@@ -32,6 +42,7 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
       collection = request.collection
       url = request.url
       result = request.result
+      rows = request.rows
       if(request.result) {
         document.getElementById('url').innerHTML += '<a href="' + request.url + '" target="blank">' + request.url + '</a>'
         document.getElementById('result').innerHTML = request.result
@@ -53,21 +64,8 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
 function makeList(collection, list) {
   for (let i = 0; i < collection.length; i++) {
     let node = document.createElement('LI')
-    if (collection[i].type == 'img') {
-      let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].src)
-      node.appendChild(textNode)
-    } else if (collection[i].type == 'a') {
-      let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].url)
-      node.appendChild(textNode)
-    } else {
-      if (collection[i].contents) {
-        let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].contents)
-        node.appendChild(textNode)
-      } else {
-        let textNode = document.createTextNode('Invalid element type')
-        node.appendChild(textNode)
-      }
-    }
+    let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].contents)
+    node.appendChild(textNode)
     list.appendChild(node)
   }
 }
@@ -92,3 +90,57 @@ function sendData(result, collection, url) {
   }
   http.send(JSON.stringify(data));
 }
+
+function addColumn(colName, data) {
+  //add column name into first row
+  rows[0].push([colName])
+  for (let row = 0; row < data.length; row++){
+    if(!Array.isArray(rows[row + 1])){
+      rows.push([])
+    }
+    rows[row + 1][rows[0].length - 1] = data[row].contents
+  }
+  chrome.runtime.sendMessage({greeting: 'fieldAdded', rows: rows})
+}
+
+function exportToCsv(filename, rows) {
+        var processRow = function (row) {
+            var finalVal = '';
+            for (var j = 0; j < row.length; j++) {
+                var innerValue = row[j] === null ? '' : row[j].toString();
+                if (row[j] instanceof Date) {
+                    innerValue = row[j].toLocaleString();
+                };
+                var result = innerValue.replace(/"/g, '""');
+                if (result.search(/("|,|\n)/g) >= 0)
+                    result = '"' + result + '"';
+                if (j > 0)
+                    finalVal += ',';
+                finalVal += result;
+            }
+            return finalVal + '\n';
+        };
+
+        var csvFile = '';
+        for (var i = 0; i < rows.length; i++) {
+            csvFile += processRow(rows[i]);
+        }
+
+        var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement("a");
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+// exportToCsv('export.csv', [])

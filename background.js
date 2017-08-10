@@ -1,6 +1,7 @@
 let result = ''
 let collection = null
 let url = ''
+let rows = [[]]
 
 // background (event) page
 let parent = chrome.contextMenus.create({
@@ -25,6 +26,8 @@ chrome.runtime.onMessage.addListener(
       collection = request.collection
       url = request.url
       chrome.browserAction.setBadgeText({text: collection.length.toString()})
+    } else if (request.greeting == "fieldAdded") {
+      rows = request.rows
     }
 })
 
@@ -32,7 +35,7 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "imReady") {
-      chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection, url: url})
+      chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection, url: url, rows: rows})
     } else if (request.greeting == "clearItems") {
       result = ''
       collection = null
