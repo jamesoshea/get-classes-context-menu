@@ -12,24 +12,28 @@
         <h1>Quarry</h1>
       </div>
       <div class="six column clear-button">
-        <button id="clear-items" class="btn btn-primary">Clear Items</button>
+        <button id="clear-items" class="btn btn-primary">Clear Selection</button>
       </div>
       <div class="six column clear-button right">
-        <button id="clear-sheet" class="btn btn-primary">Clear Table</button>
+        <button id="clear-sheet" class="btn btn-primary">Clear Everything</button>
       </div>
     </div>
     <h5>URL: </h5>
     <p id="url"></p>
     <h5>Classes:</h5>
     <p id="class-list" class="centre"></p>
-    <h5 id="result-number"></h5>
     <div class="input-group">
       <input class="form-input" type="text" id="name-input" placeholder="Field Name">
       <button id="add-column" class="btn">Add Field</button>
     </div>
+    <h5 id="result-number"></h5>
     <div class="centre">
       <ol id="result-list">
       </ol>
+    </div>
+    <h5 id="fields"></h5>
+    <div class="centre">
+      <ul id="field-list"></ul>
       <hr>
       <button id="quarry" class="btn btn-primary">Send to Server</button>
       <button id="csv" class="btn btn-primary">Save as CSV</button>

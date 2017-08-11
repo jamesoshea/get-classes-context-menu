@@ -20,16 +20,16 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button = document.getElementById('clear-items')
   button.addEventListener('click', ()=> {
     clearState(false)
+    setView()
     chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
-      setView()
     })
   })
   //button to clear spreadsheet
   button = document.getElementById('clear-sheet')
   button.addEventListener('click', ()=> {
     clearState(true)
+    setView()
     chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
-      setView()
     })
   })
   //button to add column to sheet
@@ -55,16 +55,6 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
       setView()
     }
 })
-
-//append items from collection to UI list
-function makeList(list) {
-  for (let i = 0; i < state.collection.length; i++) {
-    let node = document.createElement('LI')
-    let textNode = document.createTextNode(state.collection[i].type + ': ' + state.collection[i].contents)
-    node.appendChild(textNode)
-    list.appendChild(node)
-  }
-}
 
 //send to Server
 function sendData() {
@@ -127,6 +117,7 @@ function exportToCsv(filename, rows) {
   for (var i = 0; i < rows.length; i++) {
     csvFile += processRow(rows[i]);
   }
+  csvFile += state.url + '\n'
 
   var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
   if (navigator.msSaveBlob) { // IE 10+
@@ -155,23 +146,47 @@ function clearState(clearSheet) {
   }
 }
 
+//append items from collection to UI list
+function makeList() {
+  let list = document.getElementById('result-list')
+  for (let i = 0; i < state.collection.length; i++) {
+    let node = document.createElement('LI')
+    let textNode = document.createTextNode(state.collection[i].type + ': ' + state.collection[i].contents)
+    node.appendChild(textNode)
+    list.appendChild(node)
+  }
+}
+
+function makeFieldList() {
+  let list = document.getElementById('field-list')
+  for (let i = 0; i < state.rows[0].length; i++) {
+    let node = document.createElement('LI')
+    let textNode = document.createTextNode(state.rows[0][i])
+    node.appendChild(textNode)
+    list.appendChild(node)
+  }
+}
+
 function setView() {
-  document.getElementById('url').innerHTML = state.url
+  document.getElementById('url').innerHTML = state.url.slice(0, 50) + '...'
   let len = state.collection.length
   document.getElementById('class-list').innerHTML = state.classList
-  if (state.classList.length === 1) {
+  if (len === 1) {
     document.getElementById('result-number').innerHTML = len + ' result:'
-  } else if (state.classList.length > 1) {
+  } else if (len > 1) {
     document.getElementById('result-number').innerHTML = len + ' results:'
   } else {
     document.getElementById('class-list').innerHTML = 'Select an element to quarry from the page by right clicking.'
     document.getElementById('result-number').innerHTML = ''
   }
-  let list = document.getElementById('result-list')
-  if(state.collection.length) {
-    makeList(list)
+  if(len) {
+    makeList()
   } else {
-    list.innerHTML =''
+    document.getElementById('result-list').innerHTML = ''
+  }
+  if (state.rows[0].length) {
+    document.getElementById('fields').innerHTML = 'Fields:'
+    makeFieldList()
   }
   document.getElementById('message').innerHTML = state.message
 }

@@ -4,6 +4,10 @@ body {
   padding: 10px 20px;
 }
 
+ul {
+  list-style: none;
+}
+
 /*button {
   display: none;
 }*/
@@ -21,6 +25,10 @@ body {
   text-align: right;
   padding-top: 3rem;
   padding-right: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
 }
 
 #add-column {
