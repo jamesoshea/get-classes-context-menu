@@ -16,8 +16,7 @@ chrome.runtime.onMessage.addListener(
       let message = {
         greeting: "selection",
         classList: classList,
-        collection: collectionArr,
-        url: request.url
+        collection: collectionArr
       }
       chrome.runtime.sendMessage(message, (response) => {
       })

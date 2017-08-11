@@ -1,7 +1,11 @@
-let result = ''
-let collection = null
-let url = ''
-let rows = [[],[]]
+let state = {
+  classList: '',
+  collection: [],
+  url: '',
+  columns: 0,
+  rows: [[],[]],
+  message: ''
+}
 
 // background (event) page
 let parent = chrome.contextMenus.create({
@@ -14,6 +18,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   //no idea what this line does but nothing works without it
   chrome.tabs.sendMessage(tab.id, {})
   if(info.menuItemId == 'ekjfhvqeriuy87rvh'){
+    state.url = info.pageUrl
     chrome.tabs.sendMessage(tab.id, {greeting: "clicked", url: info.pageUrl})
   }
 })
@@ -22,12 +27,11 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
-      result = request.classList
-      collection = request.collection
-      url = request.url
-      chrome.browserAction.setBadgeText({text: collection.length.toString()})
+      state.classList = request.classList
+      state.collection = request.collection
+      chrome.browserAction.setBadgeText({text: state.collection.length.toString()})
     } else if (request.greeting == "fieldAdded") {
-      rows = request.rows
+      state.rows = request.rows
     }
 })
 
@@ -35,20 +39,18 @@ chrome.runtime.onMessage.addListener(
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "imReady") {
-      chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection, url: url, rows: rows})
+      chrome.runtime.sendMessage({greeting: "result", classList: state.classList, collection: state.collection, url: state.url, rows: state.rows})
     } else if (request.greeting == "clearItems") {
-      clearItems()
-
+      clearItems(false)
     } else if (request.greeting == "clearSheet") {
-      clearItems()
-      rows = [[],[]]
+      clearItems(true)
     }
   }
 )
 
-function clearItems() {
-  result = ''
-  collection = null
-  url = ''
+function clearItems(sheet) {
+  state.classList = ''
+  state.collection = []
+  if (sheet) state.rows = [[],[]]
   chrome.browserAction.setBadgeText({text: ''})
 }

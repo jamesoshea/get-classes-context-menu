@@ -1,9 +1,11 @@
-//initial state, updated by background.js
-let result = ''
-let collection = null
-let url = ''
-let columns = 0
-let rows = [[],[]]
+let state = {
+  classList: '',
+  collection: [],
+  url: '',
+  columns: 0,
+  rows: [[],[]],
+  message: ''
+}
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -13,30 +15,32 @@ document.addEventListener('DOMContentLoaded', ()=> {
   //button to send data to server
   let button = document.getElementById('quarry')
   button.addEventListener('click', ()=> {
-      sendData(rows, url)
+    sendData(state.rows, state.url)
   })
   //button to clear view
   button = document.getElementById('clear-items')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
-      clearItems()
+      clearState(false)
+      setView()
     })
   })
   //button to clear spreadsheet
   button = document.getElementById('clear-sheet')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearSheet'}, (response)=>{
-      clearItems()
-      rows = [[],[]]
+      clearState(true)
+      setView()
     })
   })
   //button to add column to sheet
   button = document.getElementById('add-column')
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
-      addColumn(name, collection)
+      addColumn(name, state.collection)
       chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
-        clearItems()
+        clearState(false)
+        setView()
       })
       document.getElementById('name-input').value = ''
       document.getElementById('quarry').style.display = 'inline'
@@ -44,48 +48,27 @@ document.addEventListener('DOMContentLoaded', ()=> {
   //button to export csv file
   button = document.getElementById('csv')
   button.addEventListener('click', ()=> {
-      exportToCsv(url + '.csv', rows)
+      exportToCsv(state.url + '.csv', state.rows)
   })
-
-  //make relevant buttons visible
-  if(rows || collection) {
-    document.getElementById('quarry').style.display = 'inline'
-    document.getElementById('csv').style.display = 'inline'
-  } else {
-    document.getElementById('clear-items').style.display = 'inline'
-    document.getElementById('clear-sheet').style.display = 'inline'
-  }
 })
 
 //set the view with the response (this could be a lot more elegant)
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
-      collection = request.collection
-      url = request.url
-      result = request.result
-      rows = request.rows
-      if(request.result) {
-        document.getElementById('url').innerHTML += '<a href="' + request.url + '" target="blank">' + request.url + '</a>'
-        document.getElementById('result').innerHTML = request.result
-        document.getElementById('quarry').style.display = 'inline'
-        if (request.collection.length === 1) {
-          document.getElementById('result-number').innerHTML = request.collection.length + ' result:'
-        } else {
-          document.getElementById('result-number').innerHTML = request.collection.length + ' results:'
-        }
-        let list = document.getElementById('resultList')
-        makeList(request.collection, list)
-      } else {
-        document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
-      }
+      console.log(request)
+      state.collection = request.collection
+      state.url = request.url
+      state.classList = request.classList
+      state.rows = request.rows
+      setView()
     }
 })
 
 //append items from collection to UI list
-function makeList(collection, list) {
-  for (let i = 0; i < collection.length; i++) {
+function makeList(list) {
+  for (let i = 0; i < state.collection.length; i++) {
     let node = document.createElement('LI')
-    let textNode = document.createTextNode(collection[i].type + ': ' + collection[i].contents)
+    let textNode = document.createTextNode(state.collection[i].type + ': ' + state.collection[i].contents)
     node.appendChild(textNode)
     list.appendChild(node)
   }
@@ -96,16 +79,16 @@ function sendData(result, collection, url) {
   let http = new XMLHttpRequest()
   let toUrl = "http://localhost:3000";
   let data = {
-    classes: result,
-    collection: collection,
-    url: url
+    classes: state.classList,
+    collection: state.collection,
+    url: state.url
   }
   http.open("POST", toUrl, true);
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-      document.getElementById('message').innerHTML = 'Saved! The id of your scrape is:<br/>' + http.responseText
-      document.getElementById('quarry').style.display = 'none'
+      state.message = 'Saved! The id of your scrape is:<br/>' + http.responseText
+      setView()
   	}
   }
   http.send(JSON.stringify(data));
@@ -113,15 +96,17 @@ function sendData(result, collection, url) {
 
 function addColumn(colName, data) {
   //add column name into first row
-  rows[0].push(colName)
-  rows[1].push(result)
+  state.rows[0].push(colName)
+  state.rows[1].push(state.classList)
   for (let row = 0; row < data.length; row++){
-    if(!Array.isArray(rows[row + 2])){
-      rows.push([])
+    if(!Array.isArray(state.rows[row + 2])){
+      state.rows.push([])
     }
-    rows[row + 2][rows[0].length - 1] = data[row].contents
+    state.rows[row + 2][state.rows[0].length - 1] = data[row].contents
   }
-  chrome.runtime.sendMessage({greeting: 'fieldAdded', rows: rows})
+  chrome.runtime.sendMessage({greeting: 'fieldAdded', rows: state.rows})
+  clearState(false)
+  setView()
 }
 
 function exportToCsv(filename, rows) {
@@ -133,6 +118,7 @@ function exportToCsv(filename, rows) {
       }
     }
   }
+  console.log(filename)
   //let's get into it
   var processRow = function (row) {
     var finalVal = '';
@@ -174,23 +160,33 @@ function exportToCsv(filename, rows) {
   }
 }
 
-function clearItems() {
-  document.getElementById('url').innerHTML = ''
-  document.getElementById('result-number').innerHTML = ''
-  document.getElementById('result').innerHTML = 'Select an element to quarry from the page by right clicking.'
-  document.getElementById('resultList').innerHTML = ''
-  document.getElementById('message').innerHTML = ''
-  document.getElementById('quarry').style.display = 'none'
+function clearState(clearSheet) {
+  state.classList = ''
+  state.collection = []
+  state.columns = 0
+  state.message = ''
+  if (clearSheet) {
+    state.rows = [[],[]]
+  }
 }
 
-function setState() {
-
-}
-
-function getState() {
-
-}
-
-function updateView() {
-  
+function setView() {
+  document.getElementById('url').innerHTML = state.url
+  if (state.classList.length === 1) {
+    document.getElementById('result-number').innerHTML = state.collection.length + ' result:'
+    document.getElementById('result-number').innerHTML = state.collection.length
+  } else if (state.classList.length > 1) {
+    document.getElementById('result-number').innerHTML = state.collection.length + ' results:'
+    document.getElementById('result-number').innerHTML = state.collection.length
+  } else {
+    document.getElementById('class-list').innerHTML = 'Select an element to quarry from the page by right clicking.'
+    document.getElementById('result-number').innerHTML = ''
+  }
+  let list = document.getElementById('result-list')
+  if(state.collection.length) {
+    makeList(list)
+  } else {
+    list.innerHTML =''
+  }
+  document.getElementById('message').innerHTML = state.message
 }
