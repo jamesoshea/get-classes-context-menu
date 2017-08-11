@@ -10,27 +10,28 @@ document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
   chrome.runtime.sendMessage({greeting: 'imReady'})
 
-  //send data to server
+  //button to send data to server
   let button = document.getElementById('quarry')
   button.addEventListener('click', ()=> {
       sendData(rows, url)
   })
-  //clear view
-  button = document.getElementById('clearItems')
+  //button to clear view
+  button = document.getElementById('clear-items')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
       clearItems()
     })
   })
-  button = document.getElementById('clearSheet')
+  //button to clear spreadsheet
+  button = document.getElementById('clear-sheet')
   button.addEventListener('click', ()=> {
     chrome.runtime.sendMessage({greeting: 'clearSheet'}, (response)=>{
       clearItems()
       rows = [[],[]]
     })
   })
-  //add column to sheet to sheet
-  button = document.getElementById('addColumn')
+  //button to add column to sheet
+  button = document.getElementById('add-column')
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, collection)
@@ -38,11 +39,22 @@ document.addEventListener('DOMContentLoaded', ()=> {
         clearItems()
       })
       document.getElementById('name-input').value = ''
+      document.getElementById('quarry').style.display = 'inline'
   })
+  //button to export csv file
   button = document.getElementById('csv')
   button.addEventListener('click', ()=> {
-      exportToCsv(url + 'data.csv', rows)
+      exportToCsv(url + '.csv', rows)
   })
+
+  //make relevant buttons visible
+  if(rows || collection) {
+    document.getElementById('quarry').style.display = 'inline'
+    document.getElementById('csv').style.display = 'inline'
+  } else {
+    document.getElementById('clear-items').style.display = 'inline'
+    document.getElementById('clear-sheet').style.display = 'inline'
+  }
 })
 
 //set the view with the response (this could be a lot more elegant)
@@ -113,6 +125,15 @@ function addColumn(colName, data) {
 }
 
 function exportToCsv(filename, rows) {
+  //go through sheet setting all undefined to empty strings
+  for (let i = 0; i < rows.length; i++) {
+    for (let j = 0; j < rows[i].length; j++) {
+      if(rows[i][j] === undefined) {
+        rows[i][j] = ''
+      }
+    }
+  }
+  //let's get into it
   var processRow = function (row) {
     var finalVal = '';
     for (var j = 0; j < row.length; j++) {
@@ -160,4 +181,16 @@ function clearItems() {
   document.getElementById('resultList').innerHTML = ''
   document.getElementById('message').innerHTML = ''
   document.getElementById('quarry').style.display = 'none'
+}
+
+function setState() {
+
+}
+
+function getState() {
+
+}
+
+function updateView() {
+  
 }
