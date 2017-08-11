@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
 //set the view with the response (this could be a lot more elegant)
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
-      console.log(request)
       state = request.state
       setView()
     }
@@ -75,7 +74,7 @@ function sendData() {
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-      state.message = 'Saved! The id of your scrape is:<br/>' + http.responseText
+      state.message = 'Saved! The id of your scrape is:<br/><a href="http://localhost:3000/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
       setView()
   	}
   }
@@ -158,12 +157,12 @@ function clearState(clearSheet) {
 
 function setView() {
   document.getElementById('url').innerHTML = state.url
+  let len = state.collection.length
+  document.getElementById('class-list').innerHTML = state.classList
   if (state.classList.length === 1) {
-    document.getElementById('result-number').innerHTML = state.collection.length + ' result:'
-    document.getElementById('result-number').innerHTML = state.collection.length
+    document.getElementById('result-number').innerHTML = len + ' result:'
   } else if (state.classList.length > 1) {
-    document.getElementById('result-number').innerHTML = state.collection.length + ' results:'
-    document.getElementById('result-number').innerHTML = state.collection.length
+    document.getElementById('result-number').innerHTML = len + ' results:'
   } else {
     document.getElementById('class-list').innerHTML = 'Select an element to quarry from the page by right clicking.'
     document.getElementById('result-number').innerHTML = ''
