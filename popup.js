@@ -1,3 +1,11 @@
+let state = {
+  result: ''
+  collection: null
+  url: ''
+  columns: 0
+  rows: [[],[]]
+}
+
 //initial state, updated by background.js
 let result = ''
 let collection = null
@@ -9,6 +17,7 @@ let rows = [[],[]]
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
   chrome.runtime.sendMessage({greeting: 'imReady'})
+  chrome.runtime.sendMessage({greeting: 'getState'})
 
   //button to send data to server
   let button = document.getElementById('quarry')
@@ -188,9 +197,11 @@ function setState() {
 }
 
 function getState() {
-
+  chrome.runtime.sendMessage({greeting: 'getState'}, (response)=> {
+    state = response
+  })
 }
 
 function updateView() {
-  
+
 }

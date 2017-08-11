@@ -34,7 +34,10 @@ chrome.runtime.onMessage.addListener(
 //send classList to popup.js
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.greeting == "imReady") {
+    if (request.greeting == 'getState') {
+      console.log('fetching state')
+    }
+    else if (request.greeting == "imReady") {
       chrome.runtime.sendMessage({greeting: "result", result: result, collection: collection, url: url, rows: rows})
     } else if (request.greeting == "clearItems") {
       clearItems()
