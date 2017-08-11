@@ -2,7 +2,6 @@ let state = {
   classList: '',
   collection: [],
   url: '',
-  columns: 0,
   rows: [[],[]],
   message: ''
 }
@@ -10,26 +9,26 @@ let state = {
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
-  chrome.runtime.sendMessage({greeting: 'imReady'})
+  chrome.runtime.sendMessage({greeting: 'getState'})
 
   //button to send data to server
   let button = document.getElementById('quarry')
   button.addEventListener('click', ()=> {
-    sendData(state.rows, state.url)
+    sendData(state)
   })
   //button to clear view
   button = document.getElementById('clear-items')
   button.addEventListener('click', ()=> {
-    chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
-      clearState(false)
+    clearState(false)
+    chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
       setView()
     })
   })
   //button to clear spreadsheet
   button = document.getElementById('clear-sheet')
   button.addEventListener('click', ()=> {
-    chrome.runtime.sendMessage({greeting: 'clearSheet'}, (response)=>{
-      clearState(true)
+    clearState(true)
+    chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
       setView()
     })
   })
@@ -38,12 +37,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, state.collection)
-      chrome.runtime.sendMessage({greeting: 'clearItems'}, (response)=>{
-        clearState(false)
-        setView()
+      chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
       })
       document.getElementById('name-input').value = ''
-      document.getElementById('quarry').style.display = 'inline'
   })
   //button to export csv file
   button = document.getElementById('csv')
@@ -56,10 +52,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
     if (request.greeting == "result") {
       console.log(request)
-      state.collection = request.collection
-      state.url = request.url
-      state.classList = request.classList
-      state.rows = request.rows
+      state = request.state
       setView()
     }
 })
@@ -75,14 +68,9 @@ function makeList(list) {
 }
 
 //send to Server
-function sendData(result, collection, url) {
+function sendData() {
   let http = new XMLHttpRequest()
   let toUrl = "http://localhost:3000";
-  let data = {
-    classes: state.classList,
-    collection: state.collection,
-    url: state.url
-  }
   http.open("POST", toUrl, true);
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
@@ -91,7 +79,7 @@ function sendData(result, collection, url) {
       setView()
   	}
   }
-  http.send(JSON.stringify(data));
+  http.send(JSON.stringify(state));
 }
 
 function addColumn(colName, data) {
@@ -104,7 +92,6 @@ function addColumn(colName, data) {
     }
     state.rows[row + 2][state.rows[0].length - 1] = data[row].contents
   }
-  chrome.runtime.sendMessage({greeting: 'fieldAdded', rows: state.rows})
   clearState(false)
   setView()
 }
@@ -163,7 +150,6 @@ function exportToCsv(filename, rows) {
 function clearState(clearSheet) {
   state.classList = ''
   state.collection = []
-  state.columns = 0
   state.message = ''
   if (clearSheet) {
     state.rows = [[],[]]

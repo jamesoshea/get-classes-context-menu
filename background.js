@@ -2,7 +2,6 @@ let state = {
   classList: '',
   collection: [],
   url: '',
-  columns: 0,
   rows: [[],[]],
   message: ''
 }
@@ -23,34 +22,24 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   }
 })
 
-//save classList
+//save classList from content script
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting == "selection") {
       state.classList = request.classList
       state.collection = request.collection
       chrome.browserAction.setBadgeText({text: state.collection.length.toString()})
-    } else if (request.greeting == "fieldAdded") {
-      state.rows = request.rows
     }
 })
 
 //send classList to popup.js
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.greeting == "imReady") {
-      chrome.runtime.sendMessage({greeting: "result", classList: state.classList, collection: state.collection, url: state.url, rows: state.rows})
-    } else if (request.greeting == "clearItems") {
-      clearItems(false)
-    } else if (request.greeting == "clearSheet") {
-      clearItems(true)
+    if (request.greeting == "getState") {
+      chrome.runtime.sendMessage({greeting: "result", state: state})
+    } else if (request.greeting == "setState") {
+      state = request.state
+      chrome.browserAction.setBadgeText({text: state.collection.length.toString()})
     }
   }
 )
-
-function clearItems(sheet) {
-  state.classList = ''
-  state.collection = []
-  if (sheet) state.rows = [[],[]]
-  chrome.browserAction.setBadgeText({text: ''})
-}

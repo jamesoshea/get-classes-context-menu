@@ -13,12 +13,7 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting == 'clicked') {
       //create array from collection and process it
       let collectionArr = formatCollection(collection)
-      let message = {
-        greeting: "selection",
-        classList: classList,
-        collection: collectionArr
-      }
-      chrome.runtime.sendMessage(message, (response) => {
+      chrome.runtime.sendMessage({greeting: "selection", classList: classList, collection: collectionArr}, (response) => {
       })
     }
 })
