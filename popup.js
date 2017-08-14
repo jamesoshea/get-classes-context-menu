@@ -152,7 +152,6 @@ function clearState(clearSheet) {
   state.classList = ''
   state.collection = []
   state.message = ''
-  state.url = ''
   if (clearSheet) {
     state.rows = [[],[]]
   }
@@ -196,16 +195,17 @@ function setView() {
   } else {
     document.getElementById('result-list').innerHTML = ''
   }
+  document.getElementById('fields').innerHTML = 'Fields:'
+  document.getElementById('field-list').innerHTML = ''
   if (state.rows[0].length) {
-    document.getElementById('fields').innerHTML = 'Fields:'
     makeFieldList()
   }
   document.getElementById('message').innerHTML = state.message
 }
 
 function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c)=> {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16);
-  });
+  })
 }
