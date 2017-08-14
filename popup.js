@@ -12,6 +12,8 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
+document.getElementById('user-id').innerHTML = 'user id: ' + userId
+
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
@@ -70,7 +72,7 @@ function sendData() {
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="http://localhost:3000/scrapes/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
+      state.message = 'Saved! The id of your scrape is:<br/><a href="http://localhost:3000/scrapes/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
       setView()
   	}
   }
@@ -150,6 +152,7 @@ function clearState(clearSheet) {
   state.classList = ''
   state.collection = []
   state.message = ''
+  state.url = ''
   if (clearSheet) {
     state.rows = [[],[]]
   }
