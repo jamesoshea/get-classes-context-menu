@@ -1,3 +1,5 @@
+let token = null
+
 let state = {
   classList: '',
   collection: [],
@@ -11,6 +13,10 @@ if(!localStorage.getItem('userId')) {
 }
 
 let userId = localStorage.getItem('userId')
+
+if(!localStorage.getItem('token')) {
+  getToken(userId)
+}
 
 document.getElementById('user-id').innerHTML = 'user id: ' + userId
 
@@ -208,4 +214,20 @@ function uuidv4() {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16);
   })
+}
+
+function getToken(userId) {
+  let http = new XMLHttpRequest()
+  let toUrl = "http://localhost:3000/createToken";
+  http.open("POST", toUrl, true);
+  http.setRequestHeader("Content-type", "application/json");
+  http.onreadystatechange = function() {
+  	if(http.readyState == 4 && http.status == 200) {
+      let token = http.responseText
+      console.log(token)
+  	}
+  }
+  http.send(JSON.stringify({
+    userId: userId
+  }));
 }
