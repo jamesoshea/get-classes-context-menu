@@ -22,13 +22,18 @@ ul {
 }
 
 .clear-button {
-  text-align: right;
-  padding-top: 3rem;
-  padding-right: 2rem;
+  text-align: center;
+  /*padding-top: 3rem;
+  padding-right: 2rem;*/
 }
 
 .input-group {
   margin-bottom: 1.5rem;
+}
+
+#user-id {
+  font-size: 10px;
+  padding-top: 1rem;
 }
 
 #add-column {
