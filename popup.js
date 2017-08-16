@@ -72,7 +72,7 @@ function sendData() {
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="http://localhost:3000/scrapes/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
+      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/scrapes/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
       setView()
   	} else if (http.status == 400) {
       state.message = 'Server Error. Please try again'
