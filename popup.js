@@ -67,7 +67,7 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
 //send to Server
 function sendData() {
   let http = new XMLHttpRequest()
-  let toUrl = "http://localhost:3000";
+  let toUrl = 'https://quarry-17.herokuapp.com/';
   http.open("POST", toUrl, true);
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
@@ -108,7 +108,6 @@ function exportToCsv(filename, rows) {
       }
     }
   }
-  console.log(filename)
   //let's get into it
   var processRow = function (row) {
     var finalVal = '';
