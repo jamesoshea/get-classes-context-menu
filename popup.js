@@ -12,7 +12,7 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
-document.getElementById('user-id').innerHTML = '<a href="localhost:3000/users/' + userId + '" target="blank"/>user id: ' + userId + '</a>'
+document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/' + userId + '" target="blank"/>user id: ' + userId + '</a>'
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -67,12 +67,13 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
 //send to Server
 function sendData() {
   let http = new XMLHttpRequest()
-  let toUrl = 'https://quarry-17.herokuapp.com/';
+  // let toUrl = 'https://quarry-17.herokuapp.com/';
+  let toUrl = 'https://quarry-17.herokuapp.com/newscrape/'
   http.open("POST", toUrl, true);
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {
   	if(http.readyState == 4 && http.status == 200) {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/scrapes/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
+      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/users/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
       setView()
   	} else if (http.status == 400) {
       state.message = 'Server Error. Please try again'
