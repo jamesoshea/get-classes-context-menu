@@ -12,7 +12,7 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
-document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/' + userId + '" target="blank"/>user id: ' + userId + '</a>'
+document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/' + userId + '" target="blank" id="inner-id"/>user id: ' + userId + '</a>'
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -54,6 +54,18 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
       exportToCsv(state.url + '.csv', state.rows)
   })
+
+  document.getElementById('copyButton').addEventListener('click', copyText)
+
+  function copyText() {
+    const element = document.createElement('textarea')
+    element.value = document.getElementById('inner-id').innerHTML
+    document.body.appendChild(element)
+    element.focus()
+    element.setSelectionRange(8, element.value.length)
+    document.execCommand('copy')
+    document.body.removeChild(element)
+  }
 })
 
 //set the view with the response (this could be a lot more elegant)
