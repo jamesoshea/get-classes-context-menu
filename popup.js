@@ -17,7 +17,10 @@ document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herok
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
   //send a message to the background page asking for current state
-  chrome.runtime.sendMessage({greeting: 'getState'})
+  chrome.runtime.sendMessage({greeting: 'getState'}, (response)=> {
+    state = response.state
+    setView()
+  })
 
   //button to send data to server
   let button = document.getElementById('quarry')
@@ -29,24 +32,21 @@ document.addEventListener('DOMContentLoaded', ()=> {
   button.addEventListener('click', ()=> {
     clearState(false)
     setView()
-    chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
-    })
+    chrome.runtime.sendMessage({greeting: 'setState', state: state})
   })
   //button to clear spreadsheet
   button = document.getElementById('clear-sheet')
   button.addEventListener('click', ()=> {
     clearState(true)
     setView()
-    chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
-    })
+    chrome.runtime.sendMessage({greeting: 'setState', state: state})
   })
   //button to add column to sheet
   button = document.getElementById('add-column')
   button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, state.collection)
-      chrome.runtime.sendMessage({greeting: 'setState', state: state}, (response)=>{
-      })
+      chrome.runtime.sendMessage({greeting: 'setState', state: state})
       document.getElementById('name-input').value = ''
   })
   //button to export csv file
@@ -66,14 +66,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     document.execCommand('copy')
     document.body.removeChild(element)
   }
-})
-
-//set the view with the response (this could be a lot more elegant)
-chrome.runtime.onMessage.addListener( (request, sender, sendResponse)=> {
-    if (request.greeting == "result") {
-      state = request.state
-      setView()
-    }
 })
 
 //send to Server
@@ -122,43 +114,43 @@ function exportToCsv(filename, rows) {
     }
   }
   //let's get into it
-  var processRow = function (row) {
-    var finalVal = '';
-    for (var j = 0; j < row.length; j++) {
-      var innerValue = row[j] === null ? '' : row[j].toString();
+  const processRow = function (row) {
+    let finalVal = ''
+    for (let j = 0; j < row.length; j++) {
+      let innerValue = row[j] === null ? '' : row[j].toString()
       if (row[j] instanceof Date) {
-        innerValue = row[j].toLocaleString();
+        innerValue = row[j].toLocaleString()
       };
-      var result = innerValue.replace(/"/g, '""');
+      let result = innerValue.replace(/"/g, '""')
       if (result.search(/("|,|\n)/g) >= 0)
-        result = '"' + result + '"';
+        result = '"' + result + '"'
       if (j > 0)
-        finalVal += ',';
-      finalVal += result;
+        finalVal += ','
+      finalVal += result
     }
-    return finalVal + '\n';
+    return finalVal + '\n'
   };
 
-  var csvFile = '';
-  for (var i = 0; i < rows.length; i++) {
-    csvFile += processRow(rows[i]);
+  let csvFile = ''
+  for (let i = 0; i < rows.length; i++) {
+    csvFile += processRow(rows[i])
   }
   csvFile += state.url + '\n'
 
-  var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' })
   if (navigator.msSaveBlob) { // IE 10+
-    navigator.msSaveBlob(blob, filename);
+    navigator.msSaveBlob(blob, filename)
   } else {
-    var link = document.createElement("a");
+    let link = document.createElement("a")
     if (link.download !== undefined) { // feature detection
       // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", filename);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      let url = URL.createObjectURL(blob)
+      link.setAttribute("href", url)
+      link.setAttribute("download", filename)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   }
 }
@@ -219,7 +211,7 @@ function setView() {
 
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c)=> {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16);
+    let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
   })
 }
