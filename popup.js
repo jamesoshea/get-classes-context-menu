@@ -12,7 +12,7 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
-document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/' + userId + '" target="blank" id="inner-id"/>user id: ' + userId + '</a>'
+document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/users/' + userId + '" target="blank" id="inner-id"/>' + userId + '</a>'
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -49,11 +49,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
       chrome.runtime.sendMessage({greeting: 'setState', state: state})
       document.getElementById('name-input').value = ''
   })
-  //button to export csv file
-  button = document.getElementById('csv')
-  button.addEventListener('click', ()=> {
-      exportToCsv(state.url + '.csv', state.rows)
-  })
 
   document.getElementById('copyButton').addEventListener('click', copyText)
 
@@ -62,7 +57,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     element.value = document.getElementById('inner-id').innerHTML
     document.body.appendChild(element)
     element.focus()
-    element.setSelectionRange(8, element.value.length)
+    element.setSelectionRange(0, element.value.length)
     document.execCommand('copy')
     document.body.removeChild(element)
   }
@@ -102,57 +97,6 @@ function addColumn(colName, data) {
   }
   clearState(false)
   setView()
-}
-
-function exportToCsv(filename, rows) {
-  //go through sheet setting all undefined to empty strings
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < rows[i].length; j++) {
-      if(rows[i][j] === undefined) {
-        rows[i][j] = ''
-      }
-    }
-  }
-  //let's get into it
-  const processRow = function (row) {
-    let finalVal = ''
-    for (let j = 0; j < row.length; j++) {
-      let innerValue = row[j] === null ? '' : row[j].toString()
-      if (row[j] instanceof Date) {
-        innerValue = row[j].toLocaleString()
-      };
-      let result = innerValue.replace(/"/g, '""')
-      if (result.search(/("|,|\n)/g) >= 0)
-        result = '"' + result + '"'
-      if (j > 0)
-        finalVal += ','
-      finalVal += result
-    }
-    return finalVal + '\n'
-  };
-
-  let csvFile = ''
-  for (let i = 0; i < rows.length; i++) {
-    csvFile += processRow(rows[i])
-  }
-  csvFile += state.url + '\n'
-
-  const blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' })
-  if (navigator.msSaveBlob) { // IE 10+
-    navigator.msSaveBlob(blob, filename)
-  } else {
-    let link = document.createElement("a")
-    if (link.download !== undefined) { // feature detection
-      // Browsers that support HTML5 download attribute
-      let url = URL.createObjectURL(blob)
-      link.setAttribute("href", url)
-      link.setAttribute("download", filename)
-      link.style.visibility = 'hidden'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-  }
 }
 
 function clearState(clearSheet) {
@@ -207,6 +151,11 @@ function setView() {
     makeFieldList()
   }
   document.getElementById('message').innerHTML = state.message
+  if (state.classList) {
+    document.getElementById('field-input').style.display = 'initial'
+  } else {
+    document.getElementById('field-input').style.display = 'none'
+  }
 }
 
 function uuidv4() {

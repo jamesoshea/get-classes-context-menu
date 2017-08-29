@@ -2,46 +2,43 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.2.14/spectre.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans" rel="stylesheet">
     <link rel="stylesheet" href="/css/master.css">
     <title></title>
   </head>
   <body>
-    <div class="columns">
-      <div class="col-4 column centre">
-        <h3><a href="http://quarrytheapp.surge.sh" target="blank">Quarry</a></h3>
+    <div class="container">
+      <div class="">
+        <h1><a href="http://quarrytheapp.surge.sh" target="blank">Quarry</a></h1>
       </div>
-      <div class="col-8 column centre">
+      <div class="">
         <span id="user-id"></span>
         <button id="copyButton" class="btn btn-sm">Copy</button>
       </div>
-    </div>
-    <div class="columns">
-      <div class="six column clear-button">
+      <div class="clear-button">
         <button id="clear-items" class="btn btn-primary">Clear Selection</button>
       </div>
-      <div class="six column clear-button">
+      <div class="clear-button">
         <button id="clear-sheet" class="btn btn-primary">Clear Everything</button>
       </div>
-    </div>
-    <h5>Classes:</h5>
-    <p id="class-list" class="centre"></p>
-    <div class="input-group">
-      <input class="form-input" type="text" id="name-input" placeholder="Field Name">
-      <button id="add-column" class="btn">Add Field</button>
-    </div>
-    <h5 id="result-number"></h5>
-    <div class="centre">
-      <ol id="result-list">
-      </ol>
-    </div>
-    <h5 id="fields"></h5>
-    <div class="centre">
-      <ul id="field-list"></ul>
-      <hr>
-      <button id="quarry" class="btn btn-primary">Send to Server</button>
-      <button id="csv" class="btn btn-primary">Save as CSV</button>
-      <p id="message"></p>
+      <h2>Classes:</h2>
+      <p id="class-list" class="centre"></p>
+      <div class="input-group" id="field-input">
+        <input class="form-input" type="text" id="name-input" placeholder="Field Name">
+        <button id="add-column" class="btn">Add Field</button>
+      </div>
+      <h2 id="result-number"></h2>
+      <div class="centre">
+        <ol id="result-list">
+        </ol>
+      </div>
+      <h2 id="fields"></h2>
+      <div class="centre">
+        <ul id="field-list"></ul>
+        <hr>
+        <button id="quarry" class="btn btn-primary">Send to Server</button>
+        <p id="message"></p>
+      </div>
     </div>
     <script src="popup.js" charset="utf-8"></script>
   </body>
