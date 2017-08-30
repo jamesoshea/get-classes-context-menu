@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
       document.getElementById('name-input').value = ''
   })
 
-  document.getElementById('copyButton').addEventListener('click', copyText)
+  document.getElementById('copy-button').addEventListener('click', copyText)
 
   function copyText() {
     const element = document.createElement('textarea')
