@@ -66,8 +66,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 //send to Server
 function sendData() {
   let http = new XMLHttpRequest()
-  // let toUrl = 'https://quarry-17.herokuapp.com/';
-  let toUrl = 'https://quarry-17.herokuapp.com/newscrape/'
+  let toUrl = 'https://quarry-17.herokuapp.com/scrapes/newscrape/'
   http.open("POST", toUrl, true);
   http.setRequestHeader("Content-type", "application/json");
   http.onreadystatechange = function() {

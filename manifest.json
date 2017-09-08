@@ -3,7 +3,7 @@
 
   "name": "Quarry",
   "description": "Simple data mining extension.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "James O'Shea",
 
   "permissions": [
