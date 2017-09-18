@@ -12,7 +12,7 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
-document.getElementById('user-id').innerHTML = '<a href="https://quarry-17.herokuapp.com/users/' + userId + '" target="blank" id="inner-id"/>' + userId + '</a>'
+document.getElementById('user-id').innerHTML = userId
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
   function copyText() {
     const element = document.createElement('textarea')
-    element.value = document.getElementById('inner-id').innerHTML
+    element.value = document.getElementById('user-id').innerHTML
     document.body.appendChild(element)
     element.focus()
     element.setSelectionRange(0, element.value.length)
@@ -144,7 +144,7 @@ function setView() {
   } else {
     document.getElementById('result-list').innerHTML = ''
   }
-  document.getElementById('fields').innerHTML = 'Fields:'
+  document.getElementById('fields').innerHTML = 'Fields'
   document.getElementById('field-list').innerHTML = ''
   if (state.rows[0].length) {
     makeFieldList()
