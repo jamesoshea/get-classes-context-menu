@@ -11,17 +11,24 @@ document.addEventListener("contextmenu", (event) => {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting === 'clicked') {
+      //set background colour as user feedback
       let colours = []
+      let transitions = []
       for (let i = 0; i < collection.length; i++) {
         colours.push(collection[i].style.background)
+        transitions.push(collection[i].style.transition)
         collection[i].style.background = 'gold'
-        collection[i].style.transition = 'all 2s'
         setTimeout(()=> {
+          collection[i].style.transition = 'background 2s'
           collection[i].style.background = colours[i]
+          setTimeout(()=> {
+            collection[i].style.transition = transitions[i]
+          }, 2500)
         }, 1500)
       }
       //create array from collection and process it
       let collectionArr = formatCollection(collection)
+      console.log(classList)
       sendResponse({classList: classList, collection: collectionArr})
     }
 })
@@ -30,6 +37,7 @@ chrome.runtime.onMessage.addListener(
 function formatCollection(collection) {
   let result = []
   for (var i = 0; i < collection.length; i++){
+    console.log(collection[i].nodeName)
     if (collection[i].nodeName === 'IMG') {
       result.push({
         type: 'img',
