@@ -65,23 +65,30 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 //send to Server
 function sendData() {
-  let http = new XMLHttpRequest()
-  let toUrl = 'https://quarry-17.herokuapp.com/scrapes/newscrape/'
-  http.open("POST", toUrl, true);
-  http.setRequestHeader("Content-type", "application/json");
-  http.onreadystatechange = function() {
-  	if(http.readyState == 4 && http.status == 200) {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/users/'+ userId + '/' + http.responseText +'" target="blank">' + http.responseText + '</a>'
-      setView()
-  	} else if (http.status == 400) {
+  fetch('http://localhost:3000/scrapes/newscrape/', {
+    method: 'post',
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: JSON.stringify({
+      userId: userId,
+      state: state
+    })
+  })
+  .then((response) => {
+    if (response.status !== 200) {
       state.message = 'Server Error. Please try again'
-      setView()
+      return;
     }
-  }
-  http.send(JSON.stringify({
-    userId: userId,
-    state: state
-  }));
+    response.json()
+    .then((data) => {
+      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/users/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
+      setView()
+    });
+  })
+  .catch((error) => {
+    state.message = 'Server Error. Please try again'
+  })
 }
 
 function addColumn(colName, data) {
