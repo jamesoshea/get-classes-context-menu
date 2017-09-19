@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 //send to Server
 function sendData() {
-  fetch('http://localhost:3000/scrapes/newscrape/', {
+  fetch('http://quarry-17.herokuapp.com/scrapes/newscrape/', {
     method: 'post',
     headers: {
       "Content-type": "application/json"
@@ -78,13 +78,13 @@ function sendData() {
   .then((response) => {
     if (response.status !== 200) {
       state.message = 'Server Error. Please try again'
-      return;
+      return
     }
     response.json()
     .then((data) => {
       state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/users/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
       setView()
-    });
+    })
   })
   .catch((error) => {
     state.message = 'Server Error. Please try again'
