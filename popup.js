@@ -82,7 +82,7 @@ function sendData() {
     }
     response.json()
     .then((data) => {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="https://quarry-17.herokuapp.com/users/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
+      state.message = 'Saved! The id of your scrape is:<br/><a href="http://quarry-17.herokuapp.com/users/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
       setView()
     })
   })

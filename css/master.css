@@ -1,7 +1,6 @@
 body {
   min-width: 500px;
   font-size: .7rem;
-  color: #454d5d;
 }
 
 a {
@@ -15,7 +14,6 @@ a:hover {
 
 a:focus {
   border: none;
-  color: gold;
   text-decoration: none;
 }
 
@@ -32,25 +30,6 @@ ul {
   margin-top: 0.75rem;
 }
 
-.btn {
-  color: #454d5d;
-  background-color: #fff;
-  border-color: #454d5d;
-}
-
-.btn:hover {
-  color: #454d5d;
-  background-color: #fff;
-  border-color: gold;
-}
-
-.btn:focus {
-  color: #454d5d;
-  background-color: #fff;
-  border-color: gold;
-}
-
-
 .container {
   width: 80%;
   margin: auto;
@@ -64,7 +43,4 @@ ul {
 
 #copy-button {
   margin-top: 0.95rem;
-}
-
-#name-input {
 }

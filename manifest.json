@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "Quarry",
-  "description": "Simple data mining extension.",
-  "version": "0.0.4",
+  "description": "Simple web scraping service and Chrome extension.",
+  "version": "0.0.5",
   "author": "James O'Shea",
 
   "permissions": [
