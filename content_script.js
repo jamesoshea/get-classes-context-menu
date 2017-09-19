@@ -11,20 +11,18 @@ document.addEventListener("contextmenu", (event) => {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.greeting === 'clicked') {
-      //set background colour as user feedback
-      let colours = []
-      let transitions = []
+      //set background colour & border as user feedback
+      let styles = []
       for (let i = 0; i < collection.length; i++) {
-        colours.push(collection[i].style.background)
-        transitions.push(collection[i].style.transition)
-        collection[i].style.background = 'gold'
+        let style = collection[i].style
+        styles.push(style)
+        style.background = '#A4D6FA'
+        style.borderStyle = 'solid'
+        style.borderWidth = '1px'
+        style.borderColor = '#2F93D9'
         setTimeout(()=> {
-          collection[i].style.transition = 'background 2s'
-          collection[i].style.background = colours[i]
-          setTimeout(()=> {
-            collection[i].style.transition = transitions[i]
-          }, 2500)
-        }, 1500)
+          collection[i].style = styles[i]
+        }, 2500)
       }
       //create array from collection and process it
       let collectionArr = formatCollection(collection)
