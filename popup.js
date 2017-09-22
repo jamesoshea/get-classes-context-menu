@@ -49,6 +49,13 @@ document.addEventListener('DOMContentLoaded', ()=> {
       chrome.runtime.sendMessage({greeting: 'setState', state: state})
       document.getElementById('name-input').value = ''
   })
+  //set userId to previously given one
+  button = document.getElementById('id-prompt')
+  button.addEventListener('click', ()=> {
+      userId = prompt('What is your ID?')
+      localStorage.setItem('userId', userId)
+      document.querySelector('#user-id').innerHTML = userId
+  })
 
   document.getElementById('copy-button').addEventListener('click', copyText)
 
@@ -82,7 +89,7 @@ function sendData() {
     }
     response.json()
     .then((data) => {
-      state.message = 'Saved! The id of your scrape is:<br/><a href="http://quarry-17.herokuapp.com/users/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
+      state.message = 'Saved! The id of your scrape is:<br/><a href="http://quarry-17.herokuapp.com/scrapes/'+ userId + '/' + data +'" target="blank">' + data + '</a>'
       setView()
     })
   })

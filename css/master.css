@@ -35,6 +35,17 @@ ul {
   margin: auto;
 }
 
+.id-prompt {
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.75em;
+}
+
+.fake-link:hover {
+  color: #a4d6fa;
+  text-decoration: underline;
+}
+
 #user-id {
   font-size: 0.75em;
   margin-top: 0.75rem;
