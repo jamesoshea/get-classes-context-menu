@@ -35,20 +35,6 @@ ul {
   margin: auto;
 }
 
-#login {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-
-#main-content {
-  display: none;
-}
-
-#main-text {
-  margin-top: 0.5em;
-  padding-left: 1.25em;
-}
-
 #user-id {
   font-size: 0.75em;
   margin-top: 0.75rem;

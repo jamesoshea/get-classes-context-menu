@@ -1,8 +1,3 @@
-let username = ''
-let password = ''
-let userId
-let isLoggedIn = false
-
 let state = {
   classList: '',
   collection: [],
@@ -11,19 +6,17 @@ let state = {
   message: ''
 }
 
+if(!localStorage.getItem('userId')) {
+  localStorage.setItem('userId', uuidv4())
+}
+
+let userId = localStorage.getItem('userId')
+
+document.getElementById('user-id').innerHTML = userId
+
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
-  if(isLoggedIn) {
-    document.querySelector('#login').style.display = 'none'
-    document.querySelector('#main-content').style.display = 'block'  
-  }
   //send a message to the background page asking for current state
-  chrome.runtime.sendMessage({greeting: 'isLoggedIn'}, (response)=> {
-    if(response) {
-      document.querySelector('#main-conttent').display = 'block'
-      document.querySelector('#main-conttent').display = 'none'
-    }
-  })
   chrome.runtime.sendMessage({greeting: 'getState'}, (response)=> {
     state = response.state
     setView()
@@ -48,14 +41,26 @@ document.addEventListener('DOMContentLoaded', ()=> {
     setView()
     chrome.runtime.sendMessage({greeting: 'setState', state: state})
   })
-  document.getElementById('add-column').addEventListener('click', ()=> {
+  //button to add column to sheet
+  button = document.getElementById('add-column')
+  button.addEventListener('click', ()=> {
       let name = document.getElementById('name-input').value
       addColumn(name, state.collection)
       chrome.runtime.sendMessage({greeting: 'setState', state: state})
       document.getElementById('name-input').value = ''
   })
-  document.getElementById('no-login').addEventListener('click', noLogin)
-  document.getElementById('login-button', login)
+
+  document.getElementById('copy-button').addEventListener('click', copyText)
+
+  function copyText() {
+    const element = document.createElement('textarea')
+    element.value = document.getElementById('user-id').innerHTML
+    document.body.appendChild(element)
+    element.focus()
+    element.setSelectionRange(0, element.value.length)
+    document.execCommand('copy')
+    document.body.removeChild(element)
+  }
 })
 
 //send to Server
@@ -164,51 +169,4 @@ function uuidv4() {
     let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16)
   })
-}
-
-function login() {
-  fetch('http://localhost:3000/users/login/', {
-    method: 'post',
-    headers: {
-      "Content-type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  })
-  .then((response) => {
-    if (response.status !== 200) {
-      state.message = 'Server Error. Please try again'
-      return
-    }
-    response.json()
-    .then((data) => {
-      userId = response.userId
-    })
-  })
-  .catch((error) => {
-    state.message = 'Server Error. Please try again'
-  })
-}
-
-function noLogin() {
-  if(!localStorage.getItem('userId')) {
-    localStorage.setItem('userId', uuidv4())
-  }
-  userId = localStorage.getItem('userId')
-  chrome.runtime.sendMessage({greeting: 'logMeIn'}, (response)=> {
-    console.log(response)
-    isLoggedIn = response
-  })
-}
-
-function copyText() {
-  const element = document.createElement('textarea')
-  element.value = document.getElementById('user-id').innerHTML
-  document.body.appendChild(element)
-  element.focus()
-  element.setSelectionRange(0, element.value.length)
-  document.execCommand('copy')
-  document.body.removeChild(element)
 }
