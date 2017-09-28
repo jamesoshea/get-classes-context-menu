@@ -12,7 +12,7 @@ if(!localStorage.getItem('userId')) {
 
 let userId = localStorage.getItem('userId')
 
-document.getElementById('user-id').innerHTML = userId
+document.querySelector('#user-id').innerHTML = userId
 
 //functions to be run when page loads, esp. click event listeners
 document.addEventListener('DOMContentLoaded', ()=> {
@@ -23,45 +23,45 @@ document.addEventListener('DOMContentLoaded', ()=> {
   })
 
   //button to send data to server
-  let button = document.getElementById('quarry')
+  let button = document.querySelector('#quarry')
   button.addEventListener('click', ()=> {
     sendData(state)
   })
   //button to clear view
-  button = document.getElementById('clear-items')
+  button = document.querySelector('#clear-items')
   button.addEventListener('click', ()=> {
     clearState(false)
     setView()
-    chrome.runtime.sendMessage({greeting: 'setState', state: state})
+    chrome.runtime.sendMessage({greeting: 'setState', state})
   })
   //button to clear spreadsheet
-  button = document.getElementById('clear-sheet')
+  button = document.querySelector('#clear-sheet')
   button.addEventListener('click', ()=> {
     clearState(true)
     setView()
-    chrome.runtime.sendMessage({greeting: 'setState', state: state})
+    chrome.runtime.sendMessage({greeting: 'setState', state})
   })
   //button to add column to sheet
-  button = document.getElementById('add-column')
+  button = document.querySelector('#add-column')
   button.addEventListener('click', ()=> {
-      let name = document.getElementById('name-input').value
+      let name = document.querySelector('#name-input').value
       addColumn(name, state.collection)
-      chrome.runtime.sendMessage({greeting: 'setState', state: state})
-      document.getElementById('name-input').value = ''
+      chrome.runtime.sendMessage({greeting: 'setState', state})
+      document.querySelector('#name-input').value = ''
   })
   //set userId to previously given one
-  button = document.getElementById('id-prompt')
+  button = document.querySelector('#id-prompt')
   button.addEventListener('click', ()=> {
       userId = prompt('What is your ID?')
       localStorage.setItem('userId', userId)
       document.querySelector('#user-id').innerHTML = userId
   })
 
-  document.getElementById('copy-button').addEventListener('click', copyText)
+  document.querySelector('#copy-button').addEventListener('click', copyText)
 
   function copyText() {
     const element = document.createElement('textarea')
-    element.value = document.getElementById('user-id').innerHTML
+    element.value = document.querySelector('#user-id').innerHTML
     document.body.appendChild(element)
     element.focus()
     element.setSelectionRange(0, element.value.length)
@@ -75,11 +75,11 @@ function sendData() {
   fetch('http://quarry-17.herokuapp.com/scrapes/newscrape/', {
     method: 'post',
     headers: {
-      "Content-type": "application/json"
+      'Content-type': 'application/json'
     },
     body: JSON.stringify({
       userId: userId,
-      state: state
+      state
     })
   })
   .then((response) => {
@@ -123,7 +123,7 @@ function clearState(clearSheet) {
 
 //append items from collection to UI list
 function makeList() {
-  let list = document.getElementById('result-list')
+  let list = document.querySelector('#result-list')
   for (let i = 0; i < state.collection.length; i++) {
     let node = document.createElement('LI')
     let textNode = document.createTextNode(state.collection[i].type + ': ' + state.collection[i].contents)
@@ -133,7 +133,7 @@ function makeList() {
 }
 
 function makeFieldList() {
-  let list = document.getElementById('field-list')
+  let list = document.querySelector('#field-list')
   for (let i = 0; i < state.rows[0].length; i++) {
     let node = document.createElement('LI')
     let textNode = document.createTextNode(state.rows[0][i])
@@ -144,30 +144,30 @@ function makeFieldList() {
 
 function setView() {
   let len = state.collection.length
-  document.getElementById('class-list').innerHTML = state.classList
+  document.querySelector('#class-list').innerHTML = state.classList
   if (len === 1) {
-    document.getElementById('result-number').innerHTML = len + ' result:'
+    document.querySelector('#result-number').innerHTML = len + ' result:'
   } else if (len > 1) {
-    document.getElementById('result-number').innerHTML = len + ' results:'
+    document.querySelector('#result-number').innerHTML = len + ' results:'
   } else {
-    document.getElementById('class-list').innerHTML = 'Select an element to quarry from the page by right clicking.'
-    document.getElementById('result-number').innerHTML = ''
+    document.querySelector('#class-list').innerHTML = 'Select an element to quarry from the page by right clicking.'
+    document.querySelector('#result-number').innerHTML = ''
   }
   if(len) {
     makeList()
   } else {
-    document.getElementById('result-list').innerHTML = ''
+    document.querySelector('#result-list').innerHTML = ''
   }
-  document.getElementById('fields').innerHTML = 'Fields'
-  document.getElementById('field-list').innerHTML = ''
+  document.querySelector('#fields').innerHTML = 'Fields'
+  document.querySelector('#field-list').innerHTML = ''
   if (state.rows[0].length) {
     makeFieldList()
   }
-  document.getElementById('message').innerHTML = state.message
+  document.querySelector('#message').innerHTML = state.message
   if (state.classList) {
-    document.getElementById('field-input').style.display = 'initial'
+    document.querySelector('#field-input').style.display = 'initial'
   } else {
-    document.getElementById('field-input').style.display = 'none'
+    document.querySelector('#field-input').style.display = 'none'
   }
 }
 
